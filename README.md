@@ -1,5 +1,5 @@
 # written prelim report
-Based on the ``Tuning for software analytics: is it really necessray?'' paper,
+Based on the ``Tuning for software analytics: is it really necessary?'' paper,
 I added the following sections:
 
 * Motivation: kind of software analytics tasks using data mining
