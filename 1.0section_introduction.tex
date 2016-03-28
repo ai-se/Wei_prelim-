@@ -1,0 +1,217 @@
+\section{Introduction}
+
+\subsection{Background}
+Recent years, Parameter tuning has been attracting more attentions in fields like evolutionary
+computation, data mining and  machine learning \cite{lobo2007parameter,Bergstra2012}, where the behavior of the algorithms will be controlled by the built-in parameters.  Practitioners and researchers always encounter questions like can we find an optimal set of parameters once and for all problems. Unfortunately, No Free Lunch theorem \cite{wolpert1997no} will say “NO” to this question because all algorithms perform equally well on all possible problems on average. Different sets of parameters will change the results of the algorithms in the same setting.
+
+For evolutionary algorithms(EA) with parameters like the population size and the probability of mutation, it was realized that in order to achieve optimal convergence, these parameters should be adjusted over time by taking into account information about the progress achieved. Generally, there are two major forms of setting parameter values in EA: {\it parameter tuning} and {\it parameter control}\cite{brest2006self}. The former means the commonly practiced approach that tries to find good values for the parameters before running the algorithm and then run the algorithm using these values, which remain fixed during the run. The latter means that tuning values for the parameters happen during the run of algorithms. Due the nature of EA, where a run of an EA is an intrinsically dynamic, the use of rigid parameters that do not change their values is thus in contrast to this spirit\cite{eiben1999parameter}. Therefore,  the latter form are favored a lot. There are three categories of parameter control\cite{eiben1999parameter}:
+\bi
+\item {\it Deterministic parameter control} is changing the value of parameters based on predefined rules\cite{Fogarty1989}.
+\item {\it Adaptive parameter control} is using the feedback from the search to determine the direction of the change\cite{schraudolph1992dynamic,shaefer1987argot}.
+\item {\it Self-adaptive parameter control} is to incorporate parameters into the ``chromosomes''(a terminology in EA), thereby making them subject to evolution\cite{brest2006self,qin2005self,omran2005self,yang2008self}.
+\ei.
+Evolutionary algorithms have been widely applied in software engineering, eventually forming a research field called search-based software engineering(SBSE)\cite{harman2009search}, where lots of problems in software
+engineering field, like software
+testing suites \cite{ali2010systematic}, can be solved
+by using searching algorithms. Researchers also are aware of those ``magic'' parameters associated with searching algorithms and several studies were conducted to investigate their impacts on the performance of the algorithm in SBSE. Arcuri et al. \cite{arcuri2013parameter} studied parameter tunings in context of unit test data 
+generation using grid-search and response surface methodology.
+Their results show that tuning does indeed have impact on the performance of searching algorithms. Parterson et al.\cite{paterson2015parameter} performed parameter control to improve performance in unit
+test generation problem with three existing methods from {\it Deterministic parameter control}, {\it Adaptive parameter control}, and {\it Self-adaptive parameter control}. Sayyad et al. \cite{sayyad2013parameter} carried out a replicated study on tuning
+parameters on Indicator-Based Evolutionary Algorithm (IBEA), and Nondominated Sorting Genetic Algorithm (NSGA-II) using sort of grid-search method. Their results confirm the findings in the original study by Arcuri.
+
+In  machine learning field,  learning algorithms also involves setting parameters associated with the algorithms. For example, in Random Forests\cite{breiman2001random}, there are {\it hyper-parameters} called {\it number of estimators}, {\it depth of the tree} and {\it number of features}, etc. The actual ``good'' learning algorithm used in practice is usually the one after carefully setting those hyper-parameters in order to minimize the generalization error or cost function\cite{larsen1998adaptive,chapelle2002choosing,cherkassky2004practical,bengio2000gradient}. Bengio \cite{bengio2000gradient} proposed to use gradient-based methods to optimize hyper-parameters in linear regression and time-series prediction. It was also proposed by Larsen et al.\cite{larsen1998adaptive} to optimize the regularization parameters in a neural network. To optimize SVM parameters. Chapelle et al. proposed a framework to use gradient descent method\cite{chapelle2002choosing} and Cherkassky investigated analytical methods based on training data and estimated noise level\cite{cherkassky2004practical}. Nevertheless, as pointed by Bergstra \cite{Bergstra2012}, for some learning algorithms, like random forests and CART, we can't evaluate the expectation over the unknown natural distribution of the cost function or even don't have an explicit cost function as linear regression or SVM. Instead using gradient-based method, direct search methods are more feasible for these learning algorithms. Grid search with cross-validation method is an easy way to find optimal hyper-parameters \cite{lerman1980fitting,hsu2003practical,jimenez2009finding,akay2009support}.However, Bergstra \cite{Bergstra2012} demonstrate that grid search is inferior to random search because for most data sets only a few of the tuning parameters really matter, grid search with  sufficient granularity is not efficient for hyper-parameter optimization for most data sets. Therefore, more efficient searching algorithms are needed.
+
+\subsection{Motivation}
+
+ Software analytics is the analytics on data collected from software development
+ processes for software managers and engineers to gain insights of their projects
+ to make better decisions and deliver high quality software~\cite{menzies2013software}.
+ Thanks to the development in Internet and software engineering, there's huge amount
+ of data generated from software projects. For example, at the time of this writing (Feb 2016),
+ our web searches show that Mozilla Firefox has over 1.1 million bug reports, and
+ platforms such as GitHub host over 14 million projects. The PROMISE repository
+ of SE data has grown to 200+ projects~\cite{promise15} and this is just one of
+ over a dozen open-source repositories that are readily available to researchers~\cite{rod12}.
+ The useful and insightful information is always hidden behind the project data,
+ which is impossible to obtain by investigate the raw data manually by software
+ researchers and practitioners due to the volume of the data. Therefore, some
+ automatic and intelligent techniques are required to assist software analytics tasks.
+ 
+ Over the past decade, data mining algorithms are well
+ recognized tools to explore software data to learn useful patterns or predictive
+ models. Several tasks and practices within software development have been
+ improved by applying results of software analytics, from requirement, implementation, testing and maintenance.
+%  For example, in software development process, bug
+%  reports provide crucial information to developers to fix bugs and improve the
+%  software quality. The issues with bug reports that many software teams faced
+%  are how to eliminate duplicated reports, how to classify bug reports according
+%  to priority, whether the bug reports provide sufficient information to reproduce,
+%  and how to triage bug reports and find the right software engineers to fix the bug etc. 
+%  Usually these tasks can be done by human beings spending a lot of time, but like
+%  1.1 million bug reports in Mozilla Firefox, automation is very important and
+%  necessary in this scenario. 
+By using text data in software development, data mining algorithms like SVM, linear regression, Naive Bayes, K-nearest neighbors, Decision tree and other algorithms have shown great powerful in addressing problems like
+duplicate bug reports detection \cite{sun2010discriminative,jalbert2008automated,alipour2013contextual,nguyen2012duplicate}, bug reports classification \cite{antoniol2008bug,zanetti2013categorizing,lamkanfi2011comparing,tian2013drone}, measure bug report quality \cite{bettenburg2008makes} and triage bug reports \cite{anvik2006should, bhattacharya2010fine, lin2009empirical}. By using software development process data,
+researchers could estimate project
+efforts\cite{dejaeger2012data,kocaguneli2012value, menzies2013local}, predict risks of 
+development delay \cite{da2014empirical,choetkiertikul2015predicting}, and predict defective
+module within projects\cite{me07b,hall11,lessmann2008benchmarking}; By mining security
+data within software context, software practitioners could predict identifiers of software vulnerabilities\cite{shin2011evaluating,scandariato2012predicting,medeiros2014automatic}.
+Similar to investigations on bug reports, all these software analytics 
+are exploring data by utilizing data mining algorithms like SVM, Naive Bayes, and
+Random Forests\cite{lessmann2008benchmarking, me07b, choetkiertikul2015predicting} to build 
+predictive models. In all of these software analytics works,  most of these authors claim
+their tools achieve pretty good performance or even better than the baseline methods in terms
+of some evaluation measures, like accuracy, F1-measure, and precision \cite{lamkanfi2011comparing, alipour2013contextual,lin2009empirical,lessmann2008benchmarking,hall11}.
+
+Although data mining algorithms are core tools and extensively used in software analytics, software engineering 
+researchers rarely develop their own versions of algorithms from scratch. Instead, there are
+several open source software tools available, among which most popular ones are Weka (Java)\cite{hall2009weka}, 
+Scikit-learn(Python)\cite{scikit-learn}, and numerous data mining packages in R. Thanks to those open 
+source tools, they alleviate the burden of coding up those classic data mining algorithms and make
+software researchers' life easy. However, this sort of convenience might put 
+software analytics at risk because researchers tend to put lots of efforts on problem formalization, 
+data collection and data processing and then simply use data mining tools as a black box to build 
+predictive models without any considerations regarding the tool.\cite{sun2010discriminative,jalbert2008automated, antoniol2008bug,zanetti2013categorizing,lamkanfi2011comparing,tian2013drone, alipour2013contextual,lin2009empirical,hall11,me07b,choetkiertikul2015predicting,anvik2006should, bhattacharya2010fine}.
+
+% \bi
+% \item {\em -I}: the number of trees (default: 100).
+% \item {\em -K}: the number of features (default: unlimited).
+% \item {\em depth}: the maximum depth of the trees (default: unlimited).
+% \item {\em -B}: break ties randomly when several attributes look equally good.
+% \item {\em -S}: the seed for random number generator (default:1).
+% \ei
+
+% In Scikit-learn, we have the following parameters to control Random Forests behavior\footnote{http://goo.gl/Lfi3IH}:
+
+% \bi
+% \item {\em n\_estimators}: the number of trees (default: 10)
+% \item {\em max\_features}: the number of features (default: $\sqrt{n\_features}$, options: log2(n\_feautres), etc).
+% \item {\em max\_depth}: the maximum depth of the trees (default: nodes are expanded all leaves are pure or until all leaves contain less than min\_samples\_split samples).
+% \item {\em min\_samples\_split}: the minimum number of samples required to split an node (default: 2).
+% \item {\em min\_samples\_leaf}: the minimum number of samples in newly created leaves (default:1)
+% \item {\em random\_state}: the seed for random number generator(default:numpy.random).
+% \ei
+
+% In randomForest R package, we have the following parameters \footnote{https://goo.gl/ht4pZ1}:
+% \bi
+% \item {\em ntree}:  the number of trees to grow (default:500).
+% \item {\em mtry}: the number of features randomly sampled as candidates at each split (default: ${\sqrt{n\_features}}$).
+% \item {\em nodesize}: minimum size of terminal nodes (default: 5).
+% \item {\em maxnodes}: maximum number of terminal nodes trees in the forest can have(default: unlimited).
+% \ei
+
+% By looking at the tuning parameters for these three different versions of Random Forest, 
+One of the ``black arts'' of data mining is setting the tuning
+parameters that control the choices within a data miner. Different implementations might
+provide different tuning parameters. Take Random Forests classifiers for example. By comparing the implementation in Weka\footnote{http://goo.gl/hqol4H}, 
+Scikit-learn\footnote{http://goo.gl/Lfi3IH} and R package\footnote{https://goo.gl/ht4pZ1}, on one hand, we observe that they have different sets of built-in tuning parameters to control the algorithms. That means software analytics results obtained by
+using one tool might not be easily reproduced by using the other one.
+On the other hand, even thought they all have similar parameters to control the same behavior like number of trees,
+the default values vary a lot from 10 to 500. Therefore, we could believe that those parameters would change
+the the behavior of a data miner, to some degree. Nevertheless, we rarely tuned our predictors in
+any software analytics tasks since we reasoned that a data miner's default tunings have been 
+well-explored by the developers of those algorithms (in which case
+tuning would not lead to large performance improvements). Also, we suspected that
+tuning would take so long time and be so CPU intensive that the benefits gained would not be worth effort.
+
+There are  a few work within software analytics studying 
+the impacts of parameters in learnining algorithm. Corazza et al.\cite{corazza2010effective} explore hyper-parameter space of SVR by tabu-searh and find that parameter tuning
+actually improves the performance of effort estimator. However, tabu-search might not be suited to the optimisation of models with continuous variables and of higher dimensionality (e.g. having five or more independent management options to investigate) \cite{mayer1998tabu}. Lessmann et al.\cite{lessmann2008benchmarking} tuned parameters for some of their defect predictors using  a {\em grid search}. Similarly, Tantithamthavorn et at.\cite{tantithamthavorn2016automated} applied {\em caret} package \cite{kuhn2008caret}, which is a grid-search based package,  to defect predictors. By reproducing Tantithamthavorn's results, grid serach
+takes extremely long time to find optimal parameters\wei{put running time here}. As mentioned before, grid search explore much searching space which
+are not actually useful. This gives
+ us a hint that  more simple and efficient tuning
+ frameworks should be explored.
+
+To investigate the effect of parameter tuning on software analytics, we take defect prediction as
+an example to study how tuning would change conclusions claimed by previous researchers. Since defect prediction
+has been explored so well during the past years, tremendous works within this field make it as a very 
+active field in software analytics. Furthermore, defect prediction share many similarities with other
+software analytics tasks, like delay prediction, effort estimation and bug report classification,
+in terms of utilizing data miners as its core tool. Therefore, in this paper, we study effect of tuning
+on defect prediction.
+
+\subsection{Research Questions}
+By a case study of 17 groups of defect prediction data sets from open source java system,  the research questions addressed in this paper are the following:
+
+\bi
+\item RQ1: {\bf{\em Does   tuning    improve the performance scores of a predictor?}} %We will show below
+%  examples of truly dramatic improvement:
+%  usually by 5 to 20\% and often by much more (in one extreme case,  precision improved from 0\% to 60\%).
+\item RQ2: {\bf {\em Does tuning change conclusions on what learners are better than others?}} 
+% Recent SE papers~\cite{lessmann2008benchmarking,hall11} claim that some learners are better than others. 
+% Some of those conclusions are completely changed by tuning. 
+\item RQ3: {\bf {\em Does tuning change conclusions about what factors are most important in software engineering?}} %Numerous recent SE papers (e.g.~\cite{bell2013limited,rahman2013how,me02k,Moser:2008,zimmermann2007predicting,%
+% herzig2013predicting}) use data miners to conclude that {\em this}
+% is more important than {\em that} for reducing software project defects.
+% Given the  tuning results of this paper, we show that such conclusions need to be revisited.
+\item  RQ4: {\bf {\em Is tuning easy?}} %We show that one of the simpler multi-objective optimizers
+% (differential evolution~\cite{storn1997differential}) works very well for tuning defect predictors. 
+\item RQ5: {\bf {\em Is tuning impractically slow?}} %We achieved dramatic improvements in the performance scores
+% of our data miners in less than 100 evaluations (!); i.e., very
+% quickly.
+\item RQ6: {\bf{\em Should data miners be used ``off-the-shelf'' with their default tunings?}}
+% For defect prediction from static code measures, our answer is an emphatic ``no'' (and
+% the implication for other kinds of  analytics is now an open and urgent question).
+\ei
+
+\subsection{Contribution of this thesis}
+
+Based on our answers to above research questions,  we strongly advise that:
+\bi
+\item
+Data miners should not be used ``off-the-shelf'' with default tunings.
+\item
+Any future paper on defect prediction should include a 
+tuning study. Here, we have found  an algorithm called differential
+evolution to be a useful method for conducting such
+tunings.
+\item
+Tuning needs to be repeated
+whenever data or goals are changed.
+Fortunately, the cost of finding good tunings is not excessive since, at least for
+static code defect predictors, tuning is easy and fast.
+\ei
+
+\subsection{Statement of thesis}
+
+The results of this paper show that, at least for
+defect prediction from  code attributes, parameter tuning for defect predictors is {\em remarkably simple} and can {\em dramatically improve the performance}. 
+
+\subsection{Publications (submitted) to date}
+
+\bi
+\item W. Fu, T. Menzies, X. Shen ``Tuning for Software Analytics: is it Really Necessary?'', Information and Software Technology, Elsevier, submitted.
+
+\item JC. Nam, W. Fu, S. Kim, T. Menzies, L. Tan ``Heterogeneous Defect Prediction'', Transactions on software engineering, IEEE, submitted.
+\ei
+
+\subsection{Structure of this thesis}
+
+The remainder of this paper is organized as follows. Section 2 reviews the literature on defect prediction, tuning in defect prediction , tuning algorithms and associated problems in recent work. Section 3 presents the data sets and  experiment design of our study . Section 4 discusses the results of our experiment. Section 5 discloses the reliability and validity of our study. Finally, section 6 draws the conclusion. Finally, section 7 discusses the next step and future work.
+% Faced with this data overload,
+% researchers in empirical SE
+% use  data miners  to generate 
+% {\em defect predictors from static code measures}.
+% Such   measures can be
+% automatically extracted from the code base, with very little effort
+% even for very large software systems~\cite{nagappan05}. 
+
+
+
+%Before beginning, we digress for one  clarification.
+%This paper is {\em not} arguing that
+%software analytics is somehow wrong-headed or misguided.
+%In the age of the Internet and global access to software engineering data,
+%there exists the  problem of information overload. {\em Something} must be %done to
+%allow analysts to make conclusions via an automatic analysis over a lot of %data.
+%The results of this paper is that for a particular local context
+%(a specific data set and a specific goal) there exists  
+%methods for optimizing the conclusions reached in that context.  
+%Those conclusions
+%may not generalize to other contexts but this  is not a council for despair. 
+%As shown here, 
+%there  exists general methods for finding
+%local conclusions in a particular context. Further,
+%those
+%methods are  very simple to implement and very fast to execute.

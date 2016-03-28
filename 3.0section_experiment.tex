@@ -1,0 +1,316 @@
+\section{Experimental Design}\label{sect:design}
+ 
+
+\subsection{Data Sets}\label{sect:dataa}
+
+Our defect data comes from the PROMISE repository \footnote{http://openscience.us/repo}
+and pertains to 
+open source Java systems defined in terms of \tab{ck}:  {\it ant}, {\it camel}, {\it ivy}, {\it jedit}, {\it log4j}, {\it lucene},
+{\it poi}, {\it synapse}, {\it velocity} and {\it xerces}. 
+
+An important principle in data mining is not to test on the data used
+in training.  There are many ways to design a experiment that satisfies this principle.
+Some of those methods have  limitations; e.g.
+{\em leave-one-out} is too slow for large data sets and
+{\em cross-validation} mixes up older and newer data  (such that
+data from the {\em past} may be used to test on {\em future data}).
+
+To avoid these problems, we used an incremental learning approach. The following
+experiment ensures that the training data was created at some time before the test
+data.
+For this experiment, we use data sets with at least three  
+consecutive releases  (where release $i+1$ was built after release $i$). When tuning a learner,
+\bi 
+% \item {\em Tuned learner}: the {\em first} release is used  on line 24 of Algorithm~\ref{alg:DE} to
+%   build some model using some the tunings found in some {\em Candidate}. The {\em second} release was used on line 25 of Algorithm~\ref{alg:DE} to 
+%   test the model found on line 24. The {\em third} release was used as a testing data to gather the performance statistics
+%   reported below from the best model found by DE.
+% \item {\em untuned learner}:
+
+
+
+\item The {\em first} release was used  on line 24 of Algorithm~\ref{alg:DE} to
+   build some model using some the tunings found in some {\em Candidate}.
+ \item The {\em second} release was used on line 25 of Algorithm~\ref{alg:DE} to 
+   test the candidate model found on line 24.
+   \item Finally the {\em third} release was used to gather the performance statistics
+   reported below from the best model found by DE.
+ \ei
+ 
+ To be fair for the untuned learner, the {\em first} and {\em second} releases used in tuning experiments
+ will be combined as the training data to build a model. Then the performance of this untuned learner 
+ will be evaluated by the same {\em third} release as in the tuning experiment.
+ 
+% This approach ensures   all treatments 
+% are assessed on the same tests. Note that we did consider
+% one other experimental design but rejected it for reasons of
+% internal validity (see \tion{construct}).
+
+Some data sets have more than three releases and, for those data, we could run more
+ than one experiment. For example, {\em ant} has five versions in PROMISE so
+ we ran three experiments called V0,V1,V2:
+ \bi
+ \item AntV0: first, second, third = versions 1, 2, 3
+ \item AntV1: first, second, third = versions 2, 3, 4
+ \item AntV2: first, second, third = versions 3, 4, 5
+ \ei 
+These data sets are displayed in \tab{data1}.
+
+% As an aside, an alternate experimental design would be to 
+% learn a baseline learner from the first {\em and} second release
+% instead of, as shown above,  just the first release. On the one hand,
+% this would mean that the baseline could be learned from more data.
+% On the other hand, this adds a conflation to our experimental design
+% since the optimizer uses the second release for pruning, not growing a data set.  Happily, from 
+% piror work~\cite{Menzies:2008aa} we know that defect predictors usually {\em saturates} (i.e.
+% does not generate better predictors) after 100 examples, which is a number smaller than all our first release data sets. Hence, their would
+% be little value in generating the baselines using the first and second
+% releases. 
+
+ \subsection{Data Miners}
+ 
+There are several ways to make defect predictors
+using  CART~\cite{brieman00}, Random Forest~\cite{breiman84}, 
+ WHERE~\cite{menzies2013local} and LR (logistic regression).
+For this study, we use CART, Random Forest and LR versions  from 
+SciKitLearn~\cite{scikit-learn} and
+WHERE, which is available from
+github.com/ai-se/where. 
+ We use  these algorithms for the following reasons.
+ 
+CART and Random Forest were mentioned in
+a recent IEEE TSE paper by Lessmann et al.~\cite{lessmann2008benchmarking} that compared 22  
+learners for  defect prediction.
+That study ranked  CART  worst  and Random Forest as best.
+In a demonstration of the impact of tuning,
+this paper shows  we can {\em refute} the conclusions of  Lessmann et al.
+in the sense that, after tuning,
+CART
+performs just as well as
+ Random Forest.
+
+LR was  mentioned by Hall et al.~\cite{hall11}
+as usually being as good or better as more complex learners (e.g.
+Random Forest). In a finding that endorses the Hall et al. result,
+we show that untuned LR performs better than 
+untuned Random Forest (at least, for the data sets studied here). However,
+we will show that tuning raises doubts about the optimality of the
+Hall et al. recommendation.
+
+Finally,  this
+ paper uses WHERE since, as shown below,
+it offers the new perspective that tuning could change the
+most important features selected by the learner.
+  
+%%%%%%%%%%%%%%%% list of parameters%%%%%%%%%%%%%%%%%%%%%
+\renewcommand\arraystretch{1.2}
+\begin{table*}[t!]
+\scriptsize
+  \centering
+	\begin{tabular}{|c|c|c|c|l|}
+	\cline{1-5}
+	\begin{tabular}[c]{@{}c@{}}Learner Name\end{tabular} & Parameters & Default &\begin{tabular}[c]{@{}c@{}}Tuning\\ Range\end{tabular}& 
+\multicolumn{1}{c|}{Description} \\ \hline
+ 	\multirow{8}{*}{\begin{tabular}[c]{@{}c@{}}Where-based\\ Learner\end{tabular}}
+%  	WHERE-based  Learner} 
+	& threshold & 0.5 &[0.01,1]& The value to determine defective or not .\\ \cline{2-5} 
+	& infoPrune & 0.33 &[0.01,1]& The percentage of features to consider for the best 
+split to build its final decision tree. \\ \cline{2-5} 
+	 & min\_sample\_split & 4& [1,10]& The minimum number of samples required to split an internal node of
+its final  decision tree. \\ \cline{2-5} 
+	 & min\_Size & 0.5 &[0.01,1]& \begin{tabular}[c]{@{}l@{}}Finds min\_samples\_leaf 
+in the initial clustering tree using ${n\_samples}^ {min\_Size}$.
+\end{tabular} \\ \cline{2-5} 
+    & wriggle & 0.2 &[0.01, 1] & The threshold to determine which branch in  the initial clustering tree to be pruned\\ \cline{2-5}
+	 & depthMin & 2 & [1,6]&The minimum depth of the initial clustering tree below which no pruning for the
+clustering tree. \\ \cline{2-5} 
+	 & depthMax & 10 &[1,20]& The maximum depth of the initial clustering tree. \\ \cline{2-5} 
+	 & wherePrune & False &T/F& Whether or not to prune the initial clustering tree. \\ \cline{2-5}
+	 & treePrune & True &T/F& Whether or not to prune the final decision tree. \\ \cline{2-5} 
+\hline
+\multirow{5}{*}{CART} & threshold & 0.5 &[0,1]& The value to determine defective or not. \\ \cline{2-5} 
+	 & max\_feature & None &[0.01,1]& The number of features to consider when looking for the best 
+split. \\ \cline{2-5} 
+
+	 & min\_sample\_split & 2 &[2,20]& The minimum number of samples required to split an 
+internal node. \\ \cline{2-5} 
+	 & min\_samples\_leaf & 1 & [1,20]&The minimum number of samples required to be at a leaf 
+node. \\ \cline{2-5} 
+     & max\_depth & None & [1, 50]& The maximum depth of the tree. \\
+     \cline{1-5}  
+       \multirow{5}{*}{\begin{tabular}[c]{@{}c@{}}Random \\ Forests\end{tabular}}  & threshold & 0.5 & [0.01,1] & The value to determine defective or not. \\ 
+\cline{2-5} 
+	 & max\_feature & None &[0.01,1]& The number of features to consider when looking for the best 
+split. \\ \cline{2-5} 
+	 & max\_leaf\_nodes & None &[1,50]& Grow trees with max\_leaf\_nodes in best-first fashion. \\ \cline{2-5} 
+	 & min\_sample\_split & 2 &[2,20]& The minimum number of samples required to split an 
+internal node. \\ \cline{2-5} 
+	 & min\_samples\_leaf & 1 &[1,20]&The minimum number of samples required to be at a leaf 
+node. \\ \cline{2-5} 
+	 &  n\_estimators & 100 & [50,150]&The number of trees in the forest.\\ \cline{2-5}
+	 \hline 
+Logistic Regression&\multicolumn{4}{c|}{This study uses untuned LR in order to check
+a conclusion of~\cite{hall11}. }\\\hline
+
+	\end{tabular}
+    \caption {List of parameters tuned by this paper.}
+\label{tab:parameters}
+\end{table*}
+
+\subsection{ Learners' Tunings}
+
+
+Our learners use the tuning parameters of \tab{parameters}. This section describes those parameters.
+The default parameters for CART and Random Forest are set by 
+the SciKitLearn authors and the
+default parameters for WHERE-based learner are set via our own expert judgement.
+When we say a learner is used ``off-the-shelf'', we mean
+that they use the defaults shown in \tab{parameters}. 
+
+As to the value of those defaults, it could be argued that these defaults are 
+not the best  parameters needed for practical defect prediction.
+That said,  prior to this paper, two things were true:
+\bi
+\item 
+Many data scientists in SE use the standard defaults
+in their data miners, 
+without   tuning (e.g.~\cite{me07b,Moser:2008,herzig2013predicting,zimmermann2007predicting}).
+\item
+The effort involved to adjust those tunings seemed so onerous, that
+many researchers in this field were content to take our prior advice
+of ``do not tune... it is just too hard''~\cite{me15:book1}.
+\ei
+As to why we used the "Tuning Range" shown in \tab{parameters}, and not some other ranges,
+we note that (1)~those ranges included the defaults; (2)~the results shown below
+show that by exploring those ranges,   we achieved large gains in the performance of our defect predictors.
+This is not to say that {\em larger} tuning ranges might not result in {\em greater} improvements.
+However, for the goals of this paper (to show that some tunings do matter), exploring
+just these ranges shown in \tab{parameters} will suffice.
+
+
+% As to the details of these learners, LR is a parametric
+% modeling approach. Given $f = \beta_0 + \sum_i\beta_ix_i$,
+% where $x_i$ is some measurement in a data set, and $\beta_i$
+% is learned via regression, LR
+% converts that into a function $0 \le g \le 1$
+% using $g=1/\left(1+e^{- f}\right)$. This function reports how much
+% we believe in a particular class. 
+
+CART, Random Forest, and WHERE-based learners are all  tree learners that divide a data set, then recur
+on each split.
+All these learners
+generate numeric predictions which are converted
+into binary ``yes/no'' decisions via \eq{yesno}.
+
+\begin{equation}\label{eq:yesno}\scriptsize
+\mathit{inspect}= \left\{
+\begin{array}{ll}
+d_i \ge T \rightarrow \mathit{Yes}\\
+d_i <   T \rightarrow \mathit{No} ,
+\end{array}\right.
+\end{equation}
+The splitting process is controlled by numerous tuning parameters.
+If data contains more than {\em min\_sample\_split}, then a split is attempted.
+On the other hand, if a split contains no more than {\em min\_samples\_leaf}, then the recursion stops. CART and Random Forest use a 
+user-supplied constant for this parameter while
+WHERE-based learner firstly computes this parameter $m$={\em min\_samples\_leaf} from the size of the data
+sets via  $m=\mathit{size}^\mathit{min\_size}$ to build an initial  clustering tree.
+Note that WHERE builds {\em two} trees: the initial clustering tree (to find similar sets of data)
+then a final decision tree (to learn rules that predict for each similar cluster)\footnote{A
+frequently asked question is why does WHERE build two trees--
+would not   a single tree suffice? The answer is, as shown below,  tuned WHERE's twin-tree approach 
+generates very precise predictors.}.
+The tuning parameter  {\em min\_sample\_ split } controls the construction of the
+final decision tree (so, for WHERE-based learner,
+{\em min\_size} and {\em min\_sample\_split} are the parameters to be tuned).
+
+These learners use different techniques to explore the splits:
+\bi
+\item
+CART finds the attributes whose ranges contain rows with least variance in the number
+of defects\footnote{If an attribute ranges $r_i$ is found in 
+$n_i$ rows each with a  defect count variance of $v_i$, then CART seeks the attributes
+whose ranges minimizes $\sum_i \left(\sqrt{v_i}\times n_i/(\sum_i n_i)\right)$.}.
+\item
+Random Forest    divides data like CART then  builds $F>1$  trees,
+each time using some random subset of
+the attributes. 
+\item
+When building the initial cluster tree, WHERE projects the data on to a dimension it synthesizes from the raw data using
+a process analogous to principle component analysis\footnote{
+PCA  synthesises  new
+attributes $e_i, e_2,...$
+that extends across the dimension of greatest  variance in the data  with attributes $d$.  
+This process  combines
+redundant  variables into a smaller set of variables  (so $e \ll d$) since those
+redundancies become (approximately) parallel lines
+in $e$ space. For all such redundancies \mbox{$i,j \in d$}, we 
+can ignore $j$ 
+since effects that change over $j$ also
+change in the same way over $i$.
+PCA is also useful for skipping over noisy variables from $d$-- these
+variables are effectively ignored since    they  do not contribute to the variance in the data.}.
+WHERE  divides  at the median point of that projection.
+On recursion,
+this generates the initial clustering tree, the leaves of which are clusters of  very similar examples. After that, when building 
+the final decision tree, WHERE pretends its clusters are ``classes'', then 
+asks the InfoGain of the
+Fayyad-Irani discretizer~\cite{FayIra93Multi}, to rank the attriubutes, where {\em infoPrune} is used.
+WHERE's final decision tree generator then ignores everything except the top   {\em infoPrune} percent of the sorted
+attributes.
+\ei
+Some tuning parameters are learner specific:
+\bi
+\item
+{\em Max\_feature} is used by
+CART and Random Forest to select the number of attributes
+used to build one tree.
+CART's default is to use all the attributes while 
+Random Forest usually selects the square root of the number
+of attributes.
+\item
+  {\em Max\_leaf\_nodes} is the upper bound on leaf notes generated in a 
+  Random Forest.
+\item {\em Max\_depth} is the upper bound on the depth of the CART tree.  
+ \item
+WHERE's  
+tree generation will always split up to {\em depthMin} number of branches.
+After that, WHERE will only split data if the mean performance scores of the two halves
+is ``trivially small'' (where ``trivially small'' is set by the   {\em wriggle} parameter). 
+\item
+WHERE's   {\em tree\_prune} setting controls how   
+WHERE prunes back superflous parts of the final decision tree. 
+If a decision sub-tree and its parent have the same 
+majority cluster
+(one that occurs most frequently), then if {\em tree\_prune} is enabled, we prune that decision sub-tree.
+\ei
+
+
+\subsection{Optimization Goals}
+
+Recall from Algorithm~1 that we call differential evolution once for each
+ optimization goal. This section lists those optimization goals.
+Let $\{A,B,C,D\}$ denote the
+true negatives, 
+false negatives, 
+false positives, and 
+true positives
+(respectively) found by a binary detector. 
+Certain standard measures can be computed from
+$A,B,C,D$, as shown below. Note that for $pf$, the {\em better} scores are {\em smaller}
+while
+for all other scores, the {\em better} scores are {\em larger}.
+
+{\scriptsize\[
+\begin{array}{ll}
+pd=recall=&D/(B+D)\\
+pf=&C/(A+C)\\ 
+prec=precision=&D/(D+C) \\
+F =&2*pd*prec/(pd + prec)
+\end{array}
+\]}
+
+The rest of this paper explores tuning for {\em prec} and {\em F}. Our point is not that these are best or most important optimization goals.
+Indeed, the list of ``most important'' goals is domain-specific
+and we only explore these two to illustrate how conclusions can change dramatically
+when moving from one goal to another.

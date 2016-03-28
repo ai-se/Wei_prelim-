@@ -1,0 +1,44 @@
+
+\section{Reliability and Validity}\label{sect:construct}
+
+
+{\em Reliability} refers to the consistency of the results obtained
+from the research.  For example,   how well independent researchers
+could reproduce the study? To increase external
+reliability, this paper has taken care to either  clearly define our
+algorithms or use implementations from the public domain
+(SciKitLearn). Also, all the data used in this work is available
+on-line in the PROMISE code repository and all our algorithms
+are on-line at github.com/ai-se/where.
+
+
+
+{\em External validity} checks if the results are of relevance
+for other cases, or can be generalized from samples
+to populations.  
+The examples of this paper  only relate to precision, recall, and the F-measure
+but the general principle (that the search bias changes the search conclusions)  holds for any set of goals. 
+Also,
+the tuning results shown here only came from one  software analytics task 
+(defect prediction from static code attributes).
+There are many other kinds of software analytics tasks 
+(software development effort estimation, social network mining,
+detecting duplicate issue reports, etc) and the implication of this
+study for those tasks is unclear. 
+However,  those other tasks often use the same kinds of learners
+explored in this paper so it is quite possible that
+the conclusions of this paper apply to other SE analytics tasks as well. 
+
+%That said, there exist some class of data mining papers for which
+%tuning may not be required. Consider  Le Goues et al.'s 2012
+%ICSE paper that used a evolutionary program to learn
+%repairs to code~\cite{leGoues12}. The performance criteria
+%in that paper was ``can we fix any of the known bugs?''. Note
+%that this criteria is a ``{\em competency}'' statement, and
+%not a ``{\em better than}'' statement (the difference being that
+%one is 
+%``can do'' and the other is ``can do better''). For such
+%competency claims, tuning is not necessary. However, as soon
+%as {\em better than} enters the performance criteria then this
+%becomes a race between competing methods. In such a race,
+%it is unfair to hobble one competitor with poor tunings.
