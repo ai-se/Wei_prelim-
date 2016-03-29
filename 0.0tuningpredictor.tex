@@ -1,6 +1,6 @@
 % \documentclass[final,twocolumn,5p]{elsarticle}
-% \documentclass{sig-alternative}
-\documentclass[conference]{IEEEtran}
+\documentclass{sig-alternative}
+% \documentclass[conference]{IEEEtran}
 % \documentclass[smallextended]{svjour3}
 % \documentclass[preprint,12pt,3p,number]{elsarticle}
 \usepackage{cite}
@@ -51,15 +51,15 @@
 \title{ Tuning for Software Analytics: is it Really Necessary?}
 \author{Wei Fu }
 \maketitle
-\thispagestyle{plain}
+% \thispagestyle{plain}
 \pagestyle{plain}
 
 \begin{abstract}
 Data mining algorithms have been widely used in software engineering to perform software 
 analytics, like defect
-prediction, effort estimation and text mining. But one of the “black arts” of data mining is setting
+prediction, effort estimation and text mining. But one of the  ``black arts'' of data mining is setting
 the tunings that control the miner. Nevertheless, we rarely tuned those parameters since we
-reasoned that a data miner’s default tunings have been well-explored by the developers of
+reasoned that a data miner's default tunings have been well-explored by the developers of
 those algorithms.
 
 In this work, taking defect prediction as an example, we investigated how parameter tuning can
@@ -107,7 +107,6 @@ The work has partially funded by a National Science Foundation CISE CCF award \#
  
  
 \bibliographystyle{ieeetr}
-% \bibliographystyle{elsarticle-num}
 
 \bibliography{tuningpredictor}  
 
@@ -115,15 +114,7 @@ The work has partially funded by a National Science Foundation CISE CCF award \#
 
 \end{document}
  
-% \subsection{Implications}
 
-% time for an end to era of data mining in se? moving on to a new phase of learning-as-optimization
-
-% 1) learning is actually an optimization tasks (e.g. see fig2 of  learners climbing the roc curve hill in http://goo.gl/x2EaAm)
-
-% 2) our learners are all contorted to do some tasks X (e.g. minimize expected value of entropy), then we assess them on score Y (recall). which is nuts. maybe we should build the goal predicate into the learner (e.g http://menzies.us/pdf/10which.pdf) 
-
-% 3) given 1 + 2, maybe the whole paradigm of optimizing param selection is wrong. maybe what we need is a library of bees buzzing around making random choices (e.g. about descritziation) which other bees use, plus their own random choices (e.g. max depth of tree learned from discretized data) which is used by other bees, plus their own random choices (e.g. business users reading the models).  the funky thing here is that it can take some time before some of the bees (the discretizers) get feedback from the community of people using their decision (the tree learners). 
 
 
 
