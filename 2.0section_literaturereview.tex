@@ -23,7 +23,7 @@ Their results show that tuning does indeed have impact on the performance of sea
 test generation problem with three existing methods from {\it Deterministic parameter control}, {\it Adaptive parameter control}, and {\it Self-adaptive parameter control}. Sayyad et al. \cite{sayyad2013parameter} carried out a replicated study on tuning
 parameters on Indicator-Based Evolutionary Algorithm (IBEA), and Nondominated Sorting Genetic Algorithm (NSGA-II) using sort of grid-search method. Their results confirm the findings in the original study by Arcuri.
 
-In  machine learning field,  learning algorithms also involves setting parameters associated with the algorithms. For example, in Random Forests\cite{breiman2001random}, there are {\it hyper-parameters} called {\it number of estimators}, {\it depth of the tree} and {\it number of features}, etc. The actual ``good'' learning algorithm used in practice is usually the one after carefully setting those hyper-parameters in order to minimize the generalization error or cost function\cite{larsen1998adaptive,chapelle2002choosing,cherkassky2004practical,bengio2000gradient}. Bengio \cite{bengio2000gradient} proposed to use gradient-based methods to optimize hyper-parameters in linear regression and time-series prediction. It was also proposed by Larsen et al.\cite{larsen1998adaptive} to optimize the regularization parameters in a neural network. To optimize SVM parameters. Chapelle et al. proposed a framework to use gradient descent method\cite{chapelle2002choosing} and Cherkassky investigated analytical methods based on training data and estimated noise level\cite{cherkassky2004practical}. Nevertheless, as pointed by Bergstra \cite{Bergstra2012}, for some learning algorithms, like random forests and CART, we can't evaluate the expectation over the unknown natural distribution of the cost function or even don't have an explicit cost function as linear regression or SVM. Instead using gradient-based method, direct search methods are more feasible for these learning algorithms. Grid search with cross-validation method is an easy way to find optimal hyper-parameters \cite{lerman1980fitting,hsu2003practical,jimenez2009finding,akay2009support}.However, Bergstra \cite{Bergstra2012} demonstrate that grid search is inferior to random search because for most data sets only a few of the tuning parameters really matter, grid search with  sufficient granularity is not efficient for hyper-parameter optimization for most data sets. Therefore, more efficient searching algorithms are needed.
+In  machine learning field,  learning algorithms also involves setting parameters associated with the algorithms. For example, in Random Forests\cite{breiman2001random}, there are {\it hyper-parameters} called {\it number of estimators}, {\it depth of the tree} and {\it number of features}, etc. The actual ``good'' learning algorithm used in practice is usually the one after carefully setting those hyper-parameters in order to minimize the generalization error or cost function\cite{larsen1998adaptive,chapelle2002choosing,cherkassky2004practical,bengio2000gradient}. Snoek et.al \cite{snoek2012practical} introduced Byesian optimization to tune machine learming algorithms.Bengio \cite{bengio2000gradient} proposed to use gradient-based methods to optimize hyper-parameters in linear regression and time-series prediction. It was also proposed by Larsen et al.\cite{larsen1998adaptive} to optimize the regularization parameters in a neural network. To optimize SVM parameters. Chapelle et al. proposed a framework to use gradient descent method\cite{chapelle2002choosing} and Cherkassky investigated analytical methods based on training data and estimated noise level\cite{cherkassky2004practical}. Nevertheless, as pointed by Bergstra \cite{Bergstra2012}, for some learning algorithms, like random forests and CART, we can't evaluate the expectation over the unknown natural distribution of the cost function or even don't have an explicit cost function as linear regression or SVM. Instead using gradient-based method, direct search methods are more feasible for these learning algorithms. Grid search with cross-validation method is an easy way to find optimal hyper-parameters \cite{lerman1980fitting,hsu2003practical,jimenez2009finding,akay2009support}.However, Bergstra \cite{Bergstra2012} demonstrate that grid search is inferior to random search because for most data sets only a few of the tuning parameters really matter, grid search with  sufficient granularity is not efficient for hyper-parameter optimization for most data sets. Therefore, more efficient searching algorithms are needed.
 
 \subsection{Defect Prediction}
 
@@ -347,17 +347,49 @@ for anyone building defect predictors.
 
 
 \subsection{Tuning Algorithms}
+In this section, we will discuss standard optimization problems and why choose DE as
+a tuning algorithm in this paper.
 
-A lot of optimization searching algorithms can be found in mathematical,
-evolutionary computation, and artificial intelligent fields.
-How should researchers select which optimizers to apply to tune data miners working 
+In mathematics, computer science, mechanical engineering, and artificial intelligence,  most optimization
+problems are to find the best solutions to maximize or minimize some objectives give a defined domain.
+Mathematically, optimization can be defined as following:
+
+\begin{equation}\label{eq1}
+  \begin{array}{ll}
+    min  & f_0(X) \\
+    s.t. & f_i(X) \leq b_i, i=1,...,m.
+  \end{array}
+\end{equation}
+Here the vector $X = (x_1,...,x_n)$ is the parameter variables, and $f_0$ is the objective function,
+and $f_i, i=1,...,m$ are the constraints function. The vector $X^*$ is the best solution if it has the 
+smallest objective value among all vectors that satisfy the constraints\cite{boyd2004convex}.
+Based on the property of objective functions and constraints function, optimization problem
+can be classified into many different subfields. For example, if objective function
+is convex (minimization) or concave (maximization) and the constraint function is convex, 
+this optimization problem is {\em convex optimization}. This sort of problem 
+could have a analytics solution by using corresponding algorithms, like {\em simplex algorithm}
+can be used to solve {\em linear programming} problem. If the objecitve function or some of 
+the constraints are nonlinear, then this problem is {\em nonlinear programming}.
+Methods like {\em Newton's method and Gradient descent} are popular methods to solve such problems.
+However, there exist another subfield where the real-world optimization problem is too complicated to
+be described by functions and we have no prior knowledge about the problem being optimized, then
+some heuristics, like {\em random search, genetic algorithms and simulated annealing},
+are used to find approximate solutions for these sort of optimization problems.
+% \end{array}
+% A lot of optimization searching algorithms can be found in mathematical,
+% evolutionary computation, and artificial intelligent fields.
+
+Since there are so many optimization algorithms, how should researchers
+select which optimizers to apply to tune data miners working 
 with software engineering data? Predictive models, like defect predictor,
 in software engineering have several limitations: the models are usually not
 numerically differentiated; whether the response surfaces are smooth or non-smooth are unknown;
 for some models, they have more parameters to tune, which will lead to a very complicated searching space. Due to these limitations, the most efficient searching algorithm
 are likely to work well with software predictive models. Specifically,
 {\em gradient} methods that are widely used in machine learning\cite{bengio2000gradient,maclaurin2015gradient} for 
-hyper-parameters optimization are not suited to this situation because gradients are usually unavailable; 
+hyper-parameters optimization are not suited to this situation because we could not have an analytical expression
+to describe the objective function in terms of those parameters to be tuned and therefore gradients are usually unavailable; 
+{\em Grid search} is a potentially expensive method as we show before\cite{tantithamthavorn2016automated} and suffers from ``curse of dimensionality''.
 {\em tabu-search} struggles with
 the high-dimensional optimization problem \cite{mayer1998tabu}; {\em Simulated annealing} 
 has been considered a good tool for complex nonlinear optimization problems\cite{fea02a,me07f}, but one of the major drawbacks of the technique is its very slow convergence, especially for large searching space\cite{ram1996parallel}. Then the evolutionary algorithms will be

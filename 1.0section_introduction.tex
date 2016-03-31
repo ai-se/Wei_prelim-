@@ -12,14 +12,15 @@
  of SE data has grown to 200+ projects~\cite{promise15} and this is just one of
  over a dozen open-source repositories that are readily available to researchers~\cite{rod12}.
  Although so much data is available, the useful and insightful information is always 
- hidden behind the project data, which is impossible to obtain by investigate the raw data manually by software
+ hidden behind the project data, which means it's impossible to obtain by investigate the raw data manually by software
  researchers and practitioners due to the volume of the data. Therefore, some
  automatic and intelligent techniques are required to assist software analytics tasks.
  
  Over the past decade, data mining algorithms are well
  recognized tools to explore software data to learn useful patterns or predictive
  models. Several tasks and practices within software development have been
- improved by applying results of software analytics, from requirement, implementation, testing and maintenance.
+ improved by applying results of software analytics, like requirement analysis, implementation,
+ testing, building and maintenance.
 %  For example, in software development process, bug
 %  reports provide crucial information to developers to fix bugs and improve the
 %  software quality. The issues with bug reports that many software teams faced
@@ -37,14 +38,12 @@ bug reports classification \cite{antoniol2008bug,zanetti2013categorizing,lamkanf
 bug report quality analysis \cite{bettenburg2008makes} and bug reports
 triage\cite{anvik2006should, bhattacharya2010fine, lin2009empirical}. 
 By using software development process data,
-researchers could estimate project efforts\cite{dejaeger2012data,kocaguneli2012value, menzies2013local},
+researchers can estimate project efforts\cite{dejaeger2012data,kocaguneli2012value, menzies2013local},
 predict risks of development delay \cite{da2014empirical,choetkiertikul2015predicting}, 
-and predict defective module within projects\cite{me07b,hall11,lessmann2008benchmarking};
-By mining security data within software context, software practitioners could predict identifiers of software vulnerabilities\cite{shin2011evaluating,scandariato2012predicting,medeiros2014automatic}.
-Similar to investigations on bug reports, all these software analytics 
-are exploring data by utilizing data mining algorithms like SVM, Naive Bayes, and
-Random Forests\cite{lessmann2008benchmarking, me07b, choetkiertikul2015predicting} to build 
-predictive models. In all of these software analytics works,  most of these authors claim
+and predict defective modules within projects\cite{me07b,hall11,lessmann2008benchmarking};
+By mining security data within software context, software practitioners can predict identifiers of software vulnerabilities\cite{shin2011evaluating,scandariato2012predicting,medeiros2014automatic} by utilizing data mining algorithms like SVM, Naive Bayes, and
+Random Forests to build 
+predictive models. In all of these software analytics works,  most authors claim
 their tools achieve pretty good performance or even better than the baseline methods in terms
 of some evaluation measures, like accuracy, F1-measure, and precision \cite{lamkanfi2011comparing, alipour2013contextual,lin2009empirical,lessmann2008benchmarking,hall11}.
 
@@ -54,20 +53,21 @@ open source software tools like Weka (Java)\cite{hall2009weka},
 Scikit-learn(Python)\cite{scikit-learn}, and numerous data mining packages in R. Thanks to those open 
 source tools, they alleviate the burden of coding up those classic data mining algorithms and make
 software researchers' life easy. However, this sort of convenience might put 
-software analytics at risk because researchers tend to put lots of efforts on problem formalization, 
+software analytics at risk because researchers tend to put lots of efforts on tasks like problem formalization, 
 data collection and data processing and then simply use data mining tool as a black box to build 
 predictive models without any further considerations on data mining algorithms\cite{sun2010discriminative,jalbert2008automated, antoniol2008bug,zanetti2013categorizing,lamkanfi2011comparing,tian2013drone, alipour2013contextual,lin2009empirical,hall11,me07b,choetkiertikul2015predicting,anvik2006should, bhattacharya2010fine}.
 Different implementations might
-provide different tuning parameters. Take Random Forests classifier for example.
+provide different tuning parameters, which control the behavior of learners to explore the data.
+Take Random Forests classifier for example.
 By comparing three implementations in Weka\footnote {http://goo.gl/hqol4H}, 
 Scikit-learn\footnote{http://goo.gl/Lfi3IH} and R package\footnote{https://goo.gl/ht4pZ1}, 
-we observe that on one hand, they have different sets of built-in tuning parameters
+we observe that, on one hand, they have different sets of built-in tuning parameters
 to control the algorithms. That means software analytics results obtained by
 using one tool might not be easily reproduced by using the other one.
 On the other hand, even thought they all have similar parameters to control
-the same behavior, like number of trees, the default values vary a lot from 10 to 500. 
+the same behavior, like number of trees, the default values vary a lot, from 10 to 500. 
 Those different values will change the the behavior of a data miner, 
-to some degree and finally change the results of the learner.
+to some degree, and finally change the results of the learner.
 
 
 % \bi
