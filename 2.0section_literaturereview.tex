@@ -6,7 +6,7 @@ in the evolutionary computation and machine learning fields.
 
 
 Parameter tuning(or hyper-parameter optimization) has been attracting more attentions in fields like evolutionary
-computation, data mining and  machine learning \cite{lobo2007parameter,Bergstra2012}, where the behavior of the algorithms will be controlled by the built-in parameters.  Practitioners and researchers always encounter questions like can we find an optimal set of parameters once and for all problems. Unfortunately, No Free Lunch theorem \cite{wolpert1997no} will say ``NO'' to this question because all algorithms perform equally well on all possible problems on average. Different sets of parameters will change the results of the algorithms in the same setting.
+computation, data mining and  machine learning \cite{lobo2007parameter,Bergstra2012}, where the behavior of the algorithms is controlled by the built-in parameters.  Practitioners and researchers always encounter questions like, can we find an optimal set of parameters once and for all problems. Unfortunately, No Free Lunch theorem \cite{wolpert1997no} will say ``NO'' to this question because all algorithms perform equally well on all possible problems on average. Different sets of parameters will change the results of the algorithms in the same setting.
 
 For evolutionary algorithms(EA) with parameters like the population size and the probability of mutation, it was realized that in order to achieve optimal convergence, these parameters should be adjusted over time by taking into account information about the progress achieved. Generally, there are two major forms of setting parameter values in EA: {\it parameter tuning} and {\it parameter control}\cite{brest2006self}. The former means the commonly practiced approach that tries to find good values for the parameters before running the algorithm and then run the algorithm using these values, which remain fixed during the run. The latter means that tuning values for the parameters happen during the run of algorithms. Due the nature of EA, where a run of an EA is an intrinsically dynamic, the use of rigid parameters that do not change their values is thus in contrast to this spirit\cite{eiben1999parameter}. Therefore,  the latter form are favored a lot. There are three categories of parameter control\cite{eiben1999parameter}:
 \bi
@@ -15,15 +15,15 @@ For evolutionary algorithms(EA) with parameters like the population size and the
 \item {\it Self-adaptive parameter control} is to incorporate parameters into the ``chromosomes''(a terminology in EA), thereby making them subject to evolution\cite{brest2006self,qin2005self,omran2005self,yang2008self}.
 \ei.
 Evolutionary algorithms have been widely applied in software engineering, eventually forming a research field called search-based software engineering(SBSE)\cite{harman2009search}, where lots of problems in software
-engineering field, like software
-testing suites \cite{ali2010systematic}, can be solved
+engineering field, like genearting
+test suites \cite{ali2010systematic}, can be solved
 by using searching algorithms. Researchers also are aware of those ``magic'' parameters associated with searching algorithms and several studies were conducted to investigate their impacts on the performance of the algorithm in SBSE. Arcuri et al. \cite{arcuri2013parameter} studied parameter tunings in context of unit test data 
 generation using grid-search and response surface methodology.
 Their results show that tuning does indeed have impact on the performance of searching algorithms. Parterson et al.\cite{paterson2015parameter} performed parameter control to improve performance in unit
 test generation problem with three existing methods from {\it Deterministic parameter control}, {\it Adaptive parameter control}, and {\it Self-adaptive parameter control}. Sayyad et al. \cite{sayyad2013parameter} carried out a replicated study on tuning
-parameters on Indicator-Based Evolutionary Algorithm (IBEA), and Nondominated Sorting Genetic Algorithm (NSGA-II) using sort of grid-search method. Their results confirm the findings in the original study by Arcuri.
+parameters on Indicator-Based Evolutionary Algorithm (IBEA), and Nondominated Sorting Genetic Algorithm (NSGA-II) using sort of grid-search method. Both of their results confirm the findings in the original study by Arcuri.
 
-In  machine learning field,  learning algorithms also involves setting parameters associated with the algorithms. For example, in Random Forests\cite{breiman2001random}, there are {\it hyper-parameters} called {\it number of estimators}, {\it depth of the tree} and {\it number of features}, etc. The actual ``good'' learning algorithm used in practice is usually the one after carefully setting those hyper-parameters in order to minimize the generalization error or cost function\cite{larsen1998adaptive,chapelle2002choosing,cherkassky2004practical,bengio2000gradient}. Snoek et.al \cite{snoek2012practical} introduced Byesian optimization to tune machine learming algorithms.Bengio \cite{bengio2000gradient} proposed to use gradient-based methods to optimize hyper-parameters in linear regression and time-series prediction. It was also proposed by Larsen et al.\cite{larsen1998adaptive} to optimize the regularization parameters in a neural network. To optimize SVM parameters. Chapelle et al. proposed a framework to use gradient descent method\cite{chapelle2002choosing} and Cherkassky investigated analytical methods based on training data and estimated noise level\cite{cherkassky2004practical}. Nevertheless, as pointed by Bergstra \cite{Bergstra2012}, for some learning algorithms, like random forests and CART, we can't evaluate the expectation over the unknown natural distribution of the cost function or even don't have an explicit cost function as linear regression or SVM. Instead using gradient-based method, direct search methods are more feasible for these learning algorithms. Grid search with cross-validation method is an easy way to find optimal hyper-parameters \cite{lerman1980fitting,hsu2003practical,jimenez2009finding,akay2009support}.However, Bergstra \cite{Bergstra2012} demonstrate that grid search is inferior to random search because for most data sets only a few of the tuning parameters really matter, grid search with  sufficient granularity is not efficient for hyper-parameter optimization for most data sets. Therefore, more efficient searching algorithms are needed.
+In another field-machine learning, learning algorithms also have ``magic'' parameters associated with the algorithms. For example, in Random Forests\cite{breiman2001random}, there are tuning parameters(also called {\it hyper-parameters} in this community) called {\it number of estimators}, {\it depth of the tree} and {\it number of features}, etc. The actual ``good'' learning algorithm used in practice is usually the one after carefully setting those hyper-parameters in order to minimize the generalization error or cost function\cite{larsen1998adaptive,chapelle2002choosing,cherkassky2004practical,bengio2000gradient}. Snoek et.al \cite{snoek2012practical} introduced Byesian optimization to tune machine learming algorithms. Bengio \cite{bengio2000gradient} proposed to use the gradient-based method to optimize hyper-parameters in linear regression and time-series prediction. Such method was also proposed by Larsen et al.\cite{larsen1998adaptive} to optimize the regularization parameters in a neural network. To optimize SVM parameters, Chapelle et al. proposed a framework to use gradient descent method\cite{chapelle2002choosing} and Cherkassky investigated analytical methods based on training data and estimated noise level\cite{cherkassky2004practical}. Nevertheless, as pointed by Bergstra \cite{Bergstra2012}, for some learning algorithms, like random forests and CART, we can't evaluate the expectation over the unknown natural distribution of the cost function or even don't have an explicit cost function as linear regression or SVM. Instead using gradient-based method, direct search methods are more feasible for these learning algorithms. Grid search with cross-validation method is an easy way to find optimal hyper-parameters \cite{lerman1980fitting,hsu2003practical,jimenez2009finding,akay2009support}. However, Bergstra \cite{Bergstra2012} demonstrate that grid search is inferior to random search because for most data sets only a few of the tuning parameters really matter, grid search with  sufficient granularity is not efficient for hyper-parameter optimization for most data sets. Therefore, more efficient searching algorithms are needed for parameter tuning.
 
 \subsection{Defect Prediction}
 
@@ -38,10 +38,64 @@ as well as presenting    some new results from Rahman et al.~\cite{rahman14:icse
 
 
 
+\begin{table*}[t]
+\renewcommand{\baselinestretch}{0.8}\begin{center}
+{\scriptsize
+\begin{tabular}{c|l|p{4.7in}}
+amc & average method complexity & e.g. number of JAVA byte codes\\\hline
+avg\_cc & average McCabe & average McCabe's cyclomatic complexity seen
+in class\\\hline
+ca & afferent couplings & how many other classes use the specific
+class. \\\hline
+cam & cohesion amongst classes & summation of number of different
+types of method parameters in every method divided by a multiplication
+of number of different method parameter types in whole class and
+number of methods. \\\hline
+cbm &coupling between methods &  total number of new/redefined methods
+to which all the inherited methods are coupled\\\hline
+cbo & coupling between objects & increased when the methods of one
+class access services of another.\\\hline
+ce & efferent couplings & how many other classes is used by the
+specific class. \\\hline
+dam & data access & ratio of the number of private (protected)
+attributes to the total number of attributes\\\hline
+dit & depth of inheritance tree &\\\hline
+ic & inheritance coupling &  number of parent classes to which a given
+class is coupled (includes counts of methods and variables inherited)
+\\\hline
+lcom & lack of cohesion in methods &number of pairs of methods that do
+not share a reference to an instance variable.\\\hline
+locm3 & another lack of cohesion measure & if $m,a$ are  the number of
+$methods,attributes$
+in a class number and $\mu(a)$  is the number of methods accessing an
+attribute, 
+then
+$lcom3=((\frac{1}{a} \sum_j^a \mu(a_j)) - m)/ (1-m)$.
+\\\hline
+loc & lines of code &\\\hline
+max\_cc & maximum McCabe & maximum McCabe's cyclomatic complexity seen
+in class\\\hline
+mfa & functional abstraction & number of methods inherited by a class
+plus number of methods accessible by member methods of the
+class\\\hline
+moa &  aggregation &  count of the number of data declarations (class
+fields) whose types are user defined classes\\\hline
+noc &  number of children &\\\hline
+npm & number of public methods & \\\hline
+rfc & response for a class &number of  methods invoked in response to
+a message to the object.\\\hline
+wmc & weighted methods per class &\\\hline
+\rowcolor{lightgray}
+defect & defect & Boolean: where defects found in post-release bug-tracking systems.
+\end{tabular}
+}
+\end{center}
+\caption{OO measures used in our defect data sets.}\label{tab:ck}
+\end{table*}
+
 \input{dm101}
 
  
-
 
 \subsection{Tuning: Important and Ignored}
 
@@ -351,7 +405,7 @@ In this section, we will discuss standard optimization problems and why choose D
 a tuning algorithm in this paper.
 
 In mathematics, computer science, mechanical engineering, and artificial intelligence,  most optimization
-problems are to find the best solutions to maximize or minimize some objectives give a defined domain.
+problems are to find the best solutions to maximize or minimize some objective given a defined domain.
 Mathematically, optimization can be defined as following:
 
 \begin{equation}\label{eq1}
@@ -360,11 +414,12 @@ Mathematically, optimization can be defined as following:
     s.t. & f_i(X) \leq b_i, i=1,...,m.
   \end{array}
 \end{equation}
+
 Here the vector $X = (x_1,...,x_n)$ is the parameter variables, and $f_0$ is the objective function,
 and $f_i, i=1,...,m$ are the constraints function. The vector $X^*$ is the best solution if it has the 
 smallest objective value among all vectors that satisfy the constraints\cite{boyd2004convex}.
-Based on the property of objective functions and constraints function, optimization problem
-can be classified into many different subfields. For example, if objective function
+Based on the properties of objective functions and constraints functions, like linearality or nonlinearity,
+optimization problem can be classified into many different subfields. For example, if objective function
 is convex (minimization) or concave (maximization) and the constraint function is convex, 
 this optimization problem is {\em convex optimization}. This sort of problem 
 could have a analytics solution by using corresponding algorithms, like {\em simplex algorithm}
@@ -372,12 +427,41 @@ can be used to solve {\em linear programming} problem. If the objecitve function
 the constraints are nonlinear, then this problem is {\em nonlinear programming}.
 Methods like {\em Newton's method and Gradient descent} are popular methods to solve such problems.
 However, there exist another subfield where the real-world optimization problem is too complicated to
-be described by functions and we have no prior knowledge about the problem being optimized, then
+be described by analytical expressions and we have no prior knowledge about the problem being optimized, then
 some heuristics, like {\em random search, genetic algorithms and simulated annealing},
 are used to find approximate solutions for these sort of optimization problems.
 % \end{array}
 % A lot of optimization searching algorithms can be found in mathematical,
 % evolutionary computation, and artificial intelligent fields.
+\input{algo} 
+
+
+ \begin{table*}[t]
+
+\renewcommand{\baselinestretch}{0.8}
+\scriptsize
+\centering
+%   \begin{tabular}{p{0.75cm}p{0.75cm}p{0.75cm}p{0.75cm}p{0.75cm}p{0.75cm}p{0.75cm}p{0.75cm}p{0.75cm}p{0.75cm}}\hline
+  \begin{tabular}{c c c c c c c c c c } \hline
+  Dataset &antV0&antV1&antV2&camelV0&camelV1&ivy&jeditV0&jeditV1&jeditV2
+\\\hline
+  training &20/125 &40/178 &32/293 &13/339 &216/608 &63/111 &90/272 &75/306 &79/312
+\\  tuning  &40/178 &32/293 &92/351 &216/608 &145/872 &16/241 &75/306 &79/312 &48/367
+\\  testing &32/293 &92/351 &166/745 &145/872 &188/965 &40/352 &79/312 &48/367 &11/492
+\\ \hline
+  Dataset &log4j&lucene&poiV0&poiV1&synapse&velocity&xercesV0&xercesV1
+\\\hline
+  training &34/135 &91/195 &141/237 &37/314 &16/157 &147/196 &77/162 &71/440
+\\  tuning  &37/109 &144/247 &37/314 &248/385 &60/222 &142/214 &71/440 &69/453
+\\  testing &189/205 &203/340 &248/385 &281/442 &86/256 &78/229 &69/453 &437/588
+\\  \end{tabular}
+
+   \caption{Data used in this experiment. 
+   E.g., the top left data set has 20 defective classes out of 125 total.
+   See \tion{dataa} for explanation of {\em training, tuning, testing} sets.
+   }\label{tab:data1}
+\end{table*} 
+
 
 Since there are so many optimization algorithms, how should researchers
 select which optimizers to apply to tune data miners working 
@@ -395,7 +479,7 @@ the high-dimensional optimization problem \cite{mayer1998tabu}; {\em Simulated a
 has been considered a good tool for complex nonlinear optimization problems\cite{fea02a,me07f}, but one of the major drawbacks of the technique is its very slow convergence, especially for large searching space\cite{ram1996parallel}. Then the evolutionary algorithms will be
 the most practical candidate tools.
 
-There are various eovlutionary algoirhtms, like {\em genetic algorithms}\cite{goldberg79}, {\em differential evolution}~\cite{storn1997differential} and 
+There are various evolutionary algorihtms, like {\em genetic algorithms}\cite{goldberg79}, {\em differential evolution}~\cite{storn1997differential} and 
 {\em particle swarm optimization}~\cite{pan08}.
 Of these,   
 differential evolution (DE) is the simplest one, which can be coded in less than a page of some high-level scripting language. Our reading of the current literature is that there are more  advocates for
@@ -405,11 +489,11 @@ differential evolution than
    
 DEs have been applied before for   parameter tuning (e.g. see~\cite{omran2005differential, chiha2012tuning}) but this is the first time they have been applied to
 optimize defect prediction from static code attributes.  
-The pseudocode for differential evolution is shown in Algorithm~\ref{alg:DE}.
+The pseudo-code for differential evolution is shown in Algorithm~\ref{alg:DE}.
 In the following description, 
-    superscript numbers denote lines in that pseudocode.
+    superscript numbers denote lines in that pseudo-code.
 
-\input{algo} 
+
 
 %  \begin{table*}[!t]
 
@@ -436,31 +520,8 @@ In the following description,
 %   }\label{tab:data1}
 % \end{table*} 
 
- \begin{table*}[!t]
 
-\renewcommand{\baselinestretch}{0.8}
-\scriptsize
-\centering
-%   \begin{tabular}{p{0.75cm}p{0.75cm}p{0.75cm}p{0.75cm}p{0.75cm}p{0.75cm}p{0.75cm}p{0.75cm}p{0.75cm}p{0.75cm}}\hline
-  \begin{tabular}{c c c c c c c c c c } \hline
-  Dataset &antV0&antV1&antV2&camelV0&camelV1&ivy&jeditV0&jeditV1&jeditV2
-\\\hline
-  training &20/125 &40/178 &32/293 &13/339 &216/608 &63/111 &90/272 &75/306 &79/312
-\\  tuning  &40/178 &32/293 &92/351 &216/608 &145/872 &16/241 &75/306 &79/312 &48/367
-\\  testing &32/293 &92/351 &166/745 &145/872 &188/965 &40/352 &79/312 &48/367 &11/492
-\\ \hline
-  Dataset &log4j&lucene&poiV0&poiV1&synapse&velocity&xercesV0&xercesV1
-\\\hline
-  training &34/135 &91/195 &141/237 &37/314 &16/157 &147/196 &77/162 &71/440
-\\  tuning  &37/109 &144/247 &37/314 &248/385 &60/222 &142/214 &71/440 &69/453
-\\  testing &189/205 &203/340 &248/385 &281/442 &86/256 &78/229 &69/453 &437/588
-\\  \end{tabular}
 
-   \caption{Data used in this experiment. 
-   E.g., the top left data set has 20 defective classes out of 125 total.
-   See \tion{dataa} for explanation of {\em training, tuning, testing} sets.
-   }\label{tab:data1}
-\end{table*} 
 
 DE evolves a {\em NewGeneration} of candidates  from
 a current {\em Population}.  Our DE's lose one ``life''

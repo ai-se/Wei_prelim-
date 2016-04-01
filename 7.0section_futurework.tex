@@ -3,7 +3,7 @@
 As to future work, it is now important
 to explore and exploit the implications of these
 conclusions. In this section, we will discuss potential opportunities and challenges 
-based on this paper's results, which will be the future focus for my PhD study.
+based on this paper's results, which will be the future focus for my Ph.D. study.
 
 \subsection{Find a Better Tuner}
 
@@ -13,23 +13,22 @@ Rather, our point is that there exists at least some learners
 whose performance can be dramatically improved by 
 at least one simple optimization scheme like DE. In data mining and machine learning field,
 grid search combined with cross-validation is still de facto practice for parameter tuning.
-How does grid search compare with DE in terms of running time/evaluations and performance.
-Furthermore, besides DE, there 're many other evolutionary algorithms out there, can we
-find a even better tuner than DE? At the same time, DE has its own magic parameters as well, 
+How does grid search compare with DE in terms of run time/evaluations and performance.
+Furthermore, besides DE, there are many other evolutionary algorithms out there, can we
+find a even better tuner than DE? However, DE has its own magic parameters as well, 
 which will definitely change the behavior of DE as a tuner. In this view, we have
-to use another tuner to tune DE and then to tune Learners.Perhaps a better approach might be
+to use another tuner to tune DE and then to tune learners. Perhaps a better approach might be
 to dispense with the separation of ``optimizer'' and ``learner'' and combine them both
 into one system that learns how to tune itself as it executes.
 
 \subsection{Improve Tuning Performance}
-When any supervised learning algorithm is applied, we assume that the data will use 
+When any supervised learning algorithm is applied, we assume the data 
 to fit the learner come from the same source as the testing (predicting) data. In other
 words, training data and testing data should be correlated. 
-e
 In this paper, we
 design the training, tuning and testing data as the projects data from the same project but
 released chronologically. We were tying to make the tuning and testing data much
-correlated.However,  we still observed some negative results from tables \tab{precisionbars} and \tab{fbars}.
+correlated. However,  we still observed some negative results from tables \tab{precisionbars} and \tab{fbars}.
 For example, both tuned WHERE and tuned Random Forests get decreased scores than default learners in {\it xercesV1}
 experiment for precision goal. The same pattern can also be observed in table \tab{fbars} for F scores.
 Furthermore, in figure \ref{fig:deltas}, we recognize that tuning learners don't have very big
@@ -38,7 +37,7 @@ the impacts of parameter tuning for defect prediction are not amazing good overa
 can we improve tuning performance in those data sets? 
 
 Recall the statement we made at the beginning of this section, tuning and testing data have to be correlated.
-Even though they are all from the same project, we still can't make sure whether they're strongly
+Even though they are all from the same project, we still can't make sure they're strongly
 correlated. What we can do here is to apply some heuristics to select the more correlated data from training set as tuning data based
 on some properties of testing data without using label information. Up to now, the basic idea is to cluster
 training and testing data to find nearest neighbours
@@ -66,8 +65,7 @@ can improve performance of defect predictor on most data
 sets. However, whether other software analytics tasks like
 duplicate bug reports detection \cite{sun2010discriminative,jalbert2008automated,alipour2013contextual,nguyen2012duplicate}, and bug reports classification \cite{antoniol2008bug,zanetti2013categorizing,lamkanfi2011comparing,tian2013drone} can be improved or not are unclear. It's worthy to explore more tuning practices in such topics in software engineering.
 
-Recent research in software engineering community has examined and applied deep learning to address problems
-, like code suggestion \cite{white2015toward} and localize buggy files \cite{lam2015combining}, which demonstrates its effectiveness at real software engineering tasks compared to state of the art method. However, deep learning networks usually include multiple levels of nonlinear transformations\cite{bengio2009learning}. Models like RNNs have many number of hyper parameters to control the whole system, like the number of hidden layer, the learning rate, and the amount of regularization, etc. However, most deep learning work strongly relies on engineering tricks that are difficult to be repeated and studied by others, apart from the authors themselves\cite{zhou2014big}. Up to now, there's no research on tuning deep learning parameters using software engineering data sets. There are several open questions as followings:
+Recent research in software engineering community has examined and applied deep learning to address problems, like code suggestion \cite{white2015toward} and localize buggy files \cite{lam2015combining}, which demonstrates its effectiveness at real software engineering tasks compared to state of the art method. However, deep learning networks usually include multiple levels of nonlinear transformations\cite{bengio2009learning}. Models like RNNs have many number of hyper parameters to control the whole system, like the number of hidden layer, the learning rate, and the amount of regularization, etc. However, most deep learning work strongly relies on engineering tricks that are difficult to be repeated and studied by others, apart from the authors themselves\cite{zhou2014big}. Up to now, there's no research on tuning deep learning parameters using software engineering data sets. There are several open questions as followings:
 \bi
 \item How to efficiently tune deep learning? 
 \item Is the train-tune-test framework still available for deep learning given the long running time of deep learning in current literature?

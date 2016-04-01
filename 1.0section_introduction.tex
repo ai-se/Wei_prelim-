@@ -2,8 +2,8 @@
 
 \subsection{Motivation}
 
- Software analytics is the analytics on data collected from software development
- processes for software managers and engineers to gain insights of their projects
+ Software analytics involved performing analysis of data collected during software development
+ processes for software managers and engineers to gain insights into their projects
  to make better decisions and deliver high quality software~\cite{menzies2013software}.
  Thanks to the development in Internet and software engineering, there's huge amount
  of data generated from software projects. For example, at the time of this writing (Feb 2016),
@@ -12,15 +12,14 @@
  of SE data has grown to 200+ projects~\cite{promise15} and this is just one of
  over a dozen open-source repositories that are readily available to researchers~\cite{rod12}.
  Although so much data is available, the useful and insightful information is always 
- hidden behind the project data, which means it's impossible to obtain by investigate the raw data manually by software
- researchers and practitioners due to the volume of the data. Therefore, some
+ hidden behind the project data, which means it's impossible to obtain by investigate the raw data manually by software researchers and practitioners due to the volume of the data. Therefore, some
  automatic and intelligent techniques are required to assist software analytics tasks.
  
- Over the past decade, data mining algorithms are well
+ Over the past decade, data mining algorithms have become well
  recognized tools to explore software data to learn useful patterns or predictive
  models. Several tasks and practices within software development have been
  improved by applying results of software analytics, like requirement analysis, implementation,
- testing, building and maintenance.
+ testing, building and maintenance\cite{xie2009data}.
 %  For example, in software development process, bug
 %  reports provide crucial information to developers to fix bugs and improve the
 %  software quality. The issues with bug reports that many software teams faced
@@ -44,13 +43,13 @@ and predict defective modules within projects\cite{me07b,hall11,lessmann2008benc
 By mining security data within software context, software practitioners can predict identifiers of software vulnerabilities\cite{shin2011evaluating,scandariato2012predicting,medeiros2014automatic} by utilizing data mining algorithms like SVM, Naive Bayes, and
 Random Forests to build 
 predictive models. In all of these software analytics works,  most authors claim
-their tools achieve pretty good performance or even better than the baseline methods in terms
+their tools achieve pretty good performance or even better than the methods they compared to in terms
 of some evaluation measures, like accuracy, F1-measure, and precision \cite{lamkanfi2011comparing, alipour2013contextual,lin2009empirical,lessmann2008benchmarking,hall11}.
 
 Although data mining algorithms are core tools and extensively used in software analytics, software engineering 
 researchers rarely develop their own versions of algorithms from scratch. Instead, they use
-open source software tools like Weka (Java)\cite{hall2009weka}, 
-Scikit-learn(Python)\cite{scikit-learn}, and numerous data mining packages in R. Thanks to those open 
+open source software tools like  
+Scikit-learn(Python)\cite{scikit-learn}, Weka(Java)\cite{hall2009weka}, and numerous data mining packages in R. Thanks to those open 
 source tools, they alleviate the burden of coding up those classic data mining algorithms and make
 software researchers' life easy. However, this sort of convenience might put 
 software analytics at risk because researchers tend to put lots of efforts on tasks like problem formalization, 
@@ -61,11 +60,12 @@ provide different tuning parameters, which control the behavior of learners to e
 Take Random Forests classifier for example.
 By comparing three implementations in Weka\footnote {http://goo.gl/hqol4H}, 
 Scikit-learn\footnote{http://goo.gl/Lfi3IH} and R package\footnote{https://goo.gl/ht4pZ1}, 
-we observe that, on one hand, they have different sets of built-in tuning parameters
+it's observed that, on one hand, they have different sets of built-in tuning parameters
 to control the algorithms. That means software analytics results obtained by
 using one tool might not be easily reproduced by using the other one.
 On the other hand, even thought they all have similar parameters to control
-the same behavior, like number of trees, the default values vary a lot, from 10 to 500. 
+the same behavior, like number of trees, the default values vary a lot, like
+10, 100 and 500 in Scikit-learn, Weka, and R package. 
 Those different values will change the the behavior of a data miner, 
 to some degree, and finally change the results of the learner.
 
@@ -107,10 +107,9 @@ well-explored by the developers of those algorithms (in which case
 tuning would not lead to large performance improvements). Also, we suspected that
 tuning would take so long time and be so CPU intensive that the benefits gained would not be worth effort.
 
-However, there are a few work within software analytics studying 
+However, there are a few work within the domain of software analytics, studying 
 the impacts of parameters in learning algorithm. Corazza et al.\cite{corazza2010effective} 
-explore hyper-parameter space of SVR by tabu-searh and find that parameter tuning
-actually improves the performance of effort estimator. However, 
+explore hyper-parameter space of support vector regression (SVR) running tabu-search to perform parameter tuning, which improves the performance of effort estimator. However, 
 tabu-search might not be suited to the optimisation of models
 with continuous variables and of higher dimensionality 
 (e.g. having five or more independent management options to
@@ -119,36 +118,46 @@ tuned parameters for some of their defect predictors using  a {\em grid search}.
 Similarly, Tantithamthavorn et at.\cite{tantithamthavorn2016automated} 
 applied {\em caret} package \cite{kuhn2008caret}, which is a grid-search 
 based hyper-parameter optimization package in R,  to tune defect predictors.
-By reproducing Tantithamthavorn's results,  
-we find that grid search takes quite long time to find 
-optimal parameters as shown in table \ref{tab:grid_runtime}. 
-The reason is that grid search explores much searching space which is not actually useful. 
-This gives us a hint that  more simple and efficient tuning frameworks should be investigated.
+To investigate the performance of grid search on parameter tuning, we
+run a preliminary experiment where both grid searcha and DE are
+used as tuners.
+We find that grid search takes quite long time to find 
+optimal parameters compared with DE\footnote{In this preliminary experiment, both methods achieve similar performance, but DE is much faster than grid search and more details will be discussed in our future SSBSE paper}, as shown in figure \ref{fig:grid_runtime}. 
+The reason is that grid search explores a large searching space which is actually not necessary. 
+This gives us a hint that  more simple and efficient tuning framework is needed for software analytics.
 Furthermore, the impact of tunings seems not be widely acknowledged by
-software analytics community, which is a factor will, to some extent, change
+software analytics community, which is an important factor will(to some extent) change
 the conclusion of software analytics based on previous work~\cite{mayer1998tabu,tantithamthavorn2016automated}.
 
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=6.5cm]{./eps/rf_runtime.png}
+\end{center}
+\caption{Compare overall run time of DE and grid search as tuners to tune random forest over defect prediction data.}\label{fig:grid_runtime}
+\end{figure}
 
- \begin{table}[!h]
-\renewcommand{\baselinestretch}{0.5}
-\renewcommand{\arraystretch}{3}
-\scriptsize
-\centering
-  \begin{tabular}{p{0.25cm}p{0.25cm}p{0.5cm}p{0.5cm}p{0.5cm}p{0.5cm}p{0.5cm}p{0.35cm}p{0.5cm}p{0.35cm}}\hline \hline
-%   \begin{tabular}{c c c c c c c c c c } \hline
-  Data &jm1&prop1&prop2&prop3&prop4&prop5&camel&xalan2.5&jdt
-\\\hline 
-  Time &1845 &8342 &13850 &2183 &2213 &1379 &177 &300 &336
-\\ \hline \hline
-  Data &pc5&pltfm2&pltfm21&pltfm3&debug3.4&swt3.4&mylyn&xalan2.6 & pde
-\\\hline 
-  Time &888 &4422 &5523 &7782 &317  &294 &374  &294 & 431
-\\ \hline\hline
-\\  \end{tabular}
+%  \begin{table}[!h]
+% \renewcommand{\baselinestretch}{0.5}
+% \renewcommand{\arraystretch}{3.5}
+% \scriptsize
+% \centering
+%   \begin{tabular}{p{0.55cm}p{0.25cm}p{0.5cm}p{0.5cm}p{0.5cm}p{0.5cm}p{0.5cm}p{0.35cm}p{0.5cm}p{0.35cm}}\hline \hline
+% %   \begin{tabular}{c c c c c c c c c c } \hline
+%   Data &jm1&prop1&prop2&prop3&prop4&prop5&camel&xalan2.5&jdt
+% \\\hline 
+%   Caret &1845 &8342 &13850 &2183 &2213 &1379 &177 &300 &336\\\hline
+%   DE  &598 &1099 &609 &514 &513 &513 &147 &156 &155
+% \\\hline \hline
+%   Data &pc5&pltfm2&pltfm21&pltfm3&debug3.4&swt3.4&mylyn&xalan2.6 & pde
+% \\\hline 
+%   Caret &888 &4422 &5523 &7782 &317  &294 &374  &294 & 431\\\hline
+%   DE   &264 & 601 & 695 & 925 & 153 & 162 & 180 & 159 & 173 
+% \\ \hline\hline
+% \\  \end{tabular}
 
-   \caption{ Running time of reproduced Tantithamthavorn et at.\cite{tantithamthavorn2016automated} work in seconds
-   }\label{tab:grid_runtime}
-\end{table} 
+%   \caption{ Compare Running time of reproduced Tantithamthavorn et at.\cite{tantithamthavorn2016automated} work V.S. Differential Evolution(DE) in seconds
+%   }\label{tab:grid_runtime}
+% \end{table} 
 
 To investigate the effect of parameter tuning on software analytics, 
 we take defect prediction as an example to study how tuning
@@ -162,7 +171,7 @@ in terms of utilizing data miners as its core tool.
 Therefore, in this paper, we study effect of tuning on defect prediction.
 
 \subsection{Research Questions}
-By a case study of 17 groups of defect prediction data sets from open source java system,  the research questions addressed in this paper are the following:
+As a case study of 17 groups of defect prediction data sets from open source java system,  the research questions addressed in this paper are the following:
 
 \bi
 \item RQ1: {\bf{\em Does   tuning    improve the performance scores of a predictor?}} %We will show below
